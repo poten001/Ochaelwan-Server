@@ -20,6 +20,8 @@ spring:
     password: jwt1234
   thymeleaf:
     cache: false
+  main:
+    allow-bean-definition-overriding: true
 
 
   # spring data jpa 설정
@@ -32,3 +34,4 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
+    open-in-view: false
