@@ -1,5 +1,6 @@
 package com.example.TCC.kakao.jwt;
 
+import com.example.TCC.exception.UnAuthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +28,10 @@ public class AuthTokensGenerator {
     }
 
     public Long extractMemberId(String accessToken) {
-        return Long.valueOf(jwtTokenProvider.extractSubject(accessToken));
+        try{
+            return Long.valueOf(jwtTokenProvider.extractSubject(accessToken));
+        } catch (Exception e) {
+            throw new UnAuthorizedException("로그인이 필요합니다.");
+        }
     }
 }

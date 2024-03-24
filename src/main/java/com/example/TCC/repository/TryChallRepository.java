@@ -11,4 +11,6 @@ public interface TryChallRepository extends JpaRepository<TryChall, Long> {
     boolean existsByMemberAndExpireTimeIsNotNull(Member member);
 
     Optional<TryChall> findByMemberAndExpireTimeIsNull(Member member);
+
+    Optional<TryChall> findByMember(Member member);
 }
