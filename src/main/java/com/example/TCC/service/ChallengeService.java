@@ -11,9 +11,13 @@ import com.example.TCC.exception.NotFoundException;
 import com.example.TCC.repository.CategoryRepository;
 import com.example.TCC.repository.ChallengeRepository;
 import com.example.TCC.repository.TryChallRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -62,5 +66,23 @@ public class ChallengeService {
             // 카테고리를 찾을 수 없는 경우의 처리
             throw new NotFoundException("카테고리를 찾을 수 없습니다.");
         }
+    }
+
+    @Transactional
+    public void tryChallenge(Member member) {
+        //멤버에 해당하는 챌린지 가져오기
+        TryChall tryChall = tryChallRepository.findByMember(member)
+                .orElseThrow( () -> new NotFoundException("챌린지를 찾을 수 없습니다."));
+
+        //만료시간 설정해주기 (시작시간으로부터 24시간 뒤)
+        if (tryChall.getStartTime() != null) {
+            LocalDateTime expireTime = tryChall.getStartTime().plus(Duration.ofHours(24));
+            tryChall.setExpireTime(expireTime);
+        } else {
+            //시작시간이 설정되어 있지 않는 경우
+            throw new NotFoundException("챌린지 시작시간이 설정되어 있지 않습니다.");
+        }
+
+        tryChallRepository.save(tryChall); //변경된 챌린지 정보 저장
     }
 }

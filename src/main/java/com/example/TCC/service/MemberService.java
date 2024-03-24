@@ -42,6 +42,4 @@ public class MemberService {
         }
         return dtos;
     }
-
-
 }

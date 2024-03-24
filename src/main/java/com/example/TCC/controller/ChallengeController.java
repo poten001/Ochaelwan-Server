@@ -27,4 +27,15 @@ public class ChallengeController {
         DrawChallengeResponseDto drawDto = challengeService.draw(dto, member);
         return ResponseEntity.status(HttpStatus.OK).body(drawDto);
     }
+
+    //챌린지 도전
+     @PostMapping("/try")
+     public ResponseEntity<?> tryChallenge(@RequestHeader("Authorization") String authorizationHeader) {
+        //로그인한 사용자가 있는지 확인
+         Member member = memberService.getCurrentUser(authorizationHeader);
+         challengeService.tryChallenge(member);
+
+        return ResponseEntity.status(HttpStatus.OK).body("챌린지 도전 완료");
+    }
+
 }
