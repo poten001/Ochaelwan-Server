@@ -6,6 +6,7 @@ import com.example.TCC.domain.Member;
 import com.example.TCC.domain.TryChall;
 import com.example.TCC.dto.request.DrawChallengeRequestDto;
 import com.example.TCC.dto.response.DrawChallengeResponseDto;
+import com.example.TCC.dto.response.TryChallengeResponseDto;
 import com.example.TCC.exception.ConflictException;
 import com.example.TCC.exception.NotFoundException;
 import com.example.TCC.repository.CategoryRepository;
@@ -68,6 +69,7 @@ public class ChallengeService {
         }
     }
 
+    //챌린지 도전
     @Transactional
     public void tryChallenge(Member member) {
         //멤버에 해당하는 챌린지 가져오기
@@ -76,7 +78,7 @@ public class ChallengeService {
 
         //만료시간 설정해주기 (시작시간으로부터 24시간 뒤)
         if (tryChall.getStartTime() != null) {
-            LocalDateTime expireTime = tryChall.getStartTime().plus(Duration.ofHours(24));
+            LocalDateTime expireTime = tryChall.getStartTime().plus(Duration.ofSeconds(24));
             tryChall.setExpireTime(expireTime);
         } else {
             //시작시간이 설정되어 있지 않는 경우
@@ -84,5 +86,21 @@ public class ChallengeService {
         }
 
         tryChallRepository.save(tryChall); //변경된 챌린지 정보 저장
+    }
+
+    //챌린지 도전항목 조회
+    public TryChallengeResponseDto tryCheck(Member member) {
+
+        //멤버에 해당하는 챌린지 가져오기
+        TryChall tryChall = tryChallRepository.findByMember(member)
+                .orElseThrow( () -> new NotFoundException("도전 중인 챌린지가 없습니다."));
+
+        //만료시간이 null이면 조회 못하게 해야함 (뽑기만 하고
+        if (tryChall.getExpireTime() == null)
+            throw new NotFoundException("도전 중인 챌린지가 없습니다.");
+
+        TryChallengeResponseDto dto = TryChallengeResponseDto.createTryChallengeDto(tryChall);
+
+        return dto;
     }
 }
