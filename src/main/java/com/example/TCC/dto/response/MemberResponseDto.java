@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class MemberResponseDto {
-    private Long id;
     private String email;
     private String nickname;
     private String profileUrl;
@@ -20,7 +19,6 @@ public class MemberResponseDto {
 
     public static MemberResponseDto createMemberDto(Member member) {
         return new MemberResponseDto(
-                member.getId(),
                 member.getEmail(),
                 member.getNickname(),
                 member.getProfileImg(),
