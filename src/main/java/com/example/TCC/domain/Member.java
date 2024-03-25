@@ -1,5 +1,6 @@
 package com.example.TCC.domain;
 
+import com.example.TCC.dto.request.NicknameRequestDto;
 import com.example.TCC.kakao.OAuthProvider;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -35,5 +36,10 @@ public class Member {
         this.nickname = nickname;
         this.profileImg = profileUrl;
         this.oAuthProvider = oAuthProvider;
+    }
+
+    public void patch(NicknameRequestDto dto) {
+        if(this.nickname != dto.getNickname())
+            this.nickname = dto.getNickname();
     }
 }
