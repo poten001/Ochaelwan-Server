@@ -1,6 +1,7 @@
 package com.example.TCC.service;
 
 import com.example.TCC.domain.Member;
+import com.example.TCC.dto.request.NicknameRequestDto;
 import com.example.TCC.dto.response.MemberResponseDto;
 import com.example.TCC.exception.NotFoundException;
 import com.example.TCC.exception.UnAuthorizedException;
@@ -41,5 +42,18 @@ public class MemberService {
             dtos.add(dto);
         }
         return dtos;
+    }
+
+    //로그인한 회원 정보 조회
+    public MemberResponseDto member(Member member) {
+        return MemberResponseDto.createMemberDto(member);
+    }
+
+    //회원 정보 수정(닉네임 수정)
+    public MemberResponseDto update(Member member, NicknameRequestDto dto) {
+        Member target = member;
+        target.patch(dto);
+        Member updated = memberRepository.save(target);
+        return MemberResponseDto.createMemberDto(updated);
     }
 }
