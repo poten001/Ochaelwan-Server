@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 public class TryChallengeResponseDto {
-    private Long id;
     private String memberName;
     private String memberProfile;
     private LocalDateTime startTime;
@@ -24,8 +23,7 @@ public class TryChallengeResponseDto {
     public static TryChallengeResponseDto createTryChallengeDto(TryChall tryChall) {
 
         return new TryChallengeResponseDto(
-                tryChall.getId(),
-                tryChall.getMember().getNickname(),
+                tryChall.getNickname(),
                 tryChall.getMember().getProfileImg(),
                 tryChall.getStartTime(),
                 tryChall.getExpireTime(),

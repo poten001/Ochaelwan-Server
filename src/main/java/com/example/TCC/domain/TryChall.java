@@ -27,6 +27,9 @@ public class TryChall { //챌린지 도전중
     @Column
     private LocalDateTime expireTime;
 
+    @Column
+    private String nickname;
+
     @ManyToOne
     @JoinColumn(name = "member_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -43,6 +46,7 @@ public class TryChall { //챌린지 도전중
                 null,
                 LocalDateTime.now(),
                 null,
+                member.getNickname(),
                 member,
                 challenge
         );
