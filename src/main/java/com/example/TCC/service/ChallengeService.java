@@ -78,7 +78,7 @@ public class ChallengeService {
 
         //만료시간 설정해주기 (시작시간으로부터 24시간 뒤)
         if (tryChall.getStartTime() != null) {
-            LocalDateTime expireTime = tryChall.getStartTime().plus(Duration.ofSeconds(24));
+            LocalDateTime expireTime = tryChall.getStartTime().plus(Duration.ofHours(24));
             tryChall.setExpireTime(expireTime);
         } else {
             //시작시간이 설정되어 있지 않는 경우
