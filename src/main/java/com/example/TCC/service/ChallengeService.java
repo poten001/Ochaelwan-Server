@@ -1,16 +1,15 @@
 package com.example.TCC.service;
 
-import com.example.TCC.domain.Category;
-import com.example.TCC.domain.Challenge;
-import com.example.TCC.domain.Member;
-import com.example.TCC.domain.TryChall;
+import com.example.TCC.domain.*;
 import com.example.TCC.dto.request.DrawChallengeRequestDto;
+import com.example.TCC.dto.response.CompleteChallengeResponseDto;
 import com.example.TCC.dto.response.DrawChallengeResponseDto;
 import com.example.TCC.dto.response.TryChallengeResponseDto;
 import com.example.TCC.exception.ConflictException;
 import com.example.TCC.exception.NotFoundException;
 import com.example.TCC.repository.CategoryRepository;
 import com.example.TCC.repository.ChallengeRepository;
+import com.example.TCC.repository.CompleteChallRepository;
 import com.example.TCC.repository.TryChallRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +29,7 @@ public class ChallengeService {
     private final TryChallRepository tryChallRepository;
     private final ChallengeRepository challengeRepository;
     private final CategoryRepository categoryRepository;
+    private final CompleteChallRepository completeChallRepository;
 
     //챌린지 뽑기
     public DrawChallengeResponseDto draw(DrawChallengeRequestDto dto, Member member) {
@@ -103,6 +103,23 @@ public class ChallengeService {
             throw new NotFoundException("도전 중인 챌린지가 없습니다.");
 
         TryChallengeResponseDto dto = TryChallengeResponseDto.createTryChallengeDto(tryChall);
+
+        return dto;
+    }
+
+    //챌린지 완료
+    public CompleteChallengeResponseDto complete(Member member) {
+
+        //멤버에 해당하는 챌린지 가져오기
+        TryChall tryChall = tryChallRepository.findByMember(member)
+                .orElseThrow( () -> new NotFoundException("완료할 챌린지가 없습니다."));
+
+        CompleteChall completeChall = CompleteChall.create(tryChall);
+        CompleteChall complete = completeChallRepository.save(completeChall);
+
+        tryChallRepository.delete(tryChall);
+
+        CompleteChallengeResponseDto dto = CompleteChallengeResponseDto.createCompleteChallengeDto(complete);
 
         return dto;
     }
