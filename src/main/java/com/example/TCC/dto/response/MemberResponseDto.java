@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class MemberResponseDto {
     private String email;
-    private String nickname;
+    private String memberName;
     private String profileUrl;
     private OAuthProvider oAuthProvider;
 
