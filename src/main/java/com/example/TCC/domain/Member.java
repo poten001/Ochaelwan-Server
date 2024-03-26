@@ -30,12 +30,16 @@ public class Member {
     @Column
     private OAuthProvider oAuthProvider;
 
+    @Column
+    private String refreshToken;
+
     @Builder
-    public Member(String email, String nickname, String profileUrl, OAuthProvider oAuthProvider) {
+    public Member(String email, String nickname, String profileUrl, OAuthProvider oAuthProvider, String refreshToken) {
         this.email = email;
         this.nickname = nickname;
         this.profileImg = profileUrl;
         this.oAuthProvider = oAuthProvider;
+        this.refreshToken = refreshToken;
     }
 
     public void patch(NicknameRequestDto dto) {
