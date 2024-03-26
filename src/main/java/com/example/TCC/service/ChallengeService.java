@@ -43,30 +43,33 @@ public class ChallengeService {
         Optional<TryChall> existingChallenge = tryChallRepository.findByMemberAndExpireTimeIsNull(member);
         existingChallenge.ifPresent(tryChallRepository::delete);
 
-        //새로운 챌린지 저장
-        Category category = categoryRepository.findByCategoryName(dto.getCategory());
+        String categoryName = dto.getCategory();
 
-        if (category != null) {
-            // 해당 카테고리에 속하는 모든 챌린지 조회
-            List<Challenge> challenges = challengeRepository.findByCategory(category);
+        List<Challenge> challenges;
 
-            if (!challenges.isEmpty()) {
-                // 챌린지 리스트에서 랜덤하게 하나 선택
-                Random random = new Random();
-                Challenge selectedChallenge = challenges.get(random.nextInt(challenges.size()));
-
-                // 선택된 챌린지를 바탕으로 TryChall 객체 생성 및 저장
-                TryChall tryChall = TryChall.create(selectedChallenge, member); // TryChall.create 메서드 구현에 따라 다를 수 있음
-                TryChall draw = tryChallRepository.save(tryChall);
-                return DrawChallengeResponseDto.createDrawChallengeDto(draw);
-            } else {
-                // 해당 카테고리에 챌린지가 없는 경우의 처리
-                throw new NotFoundException("카테고리에 해당하는 챌린지가 없습니다.");
-            }
+        //랜덤을 선택한 경우 모든 챌린지를 조회
+        if (categoryName.equals("랜덤")) {
+            challenges = challengeRepository.findAll();
         } else {
-            // 카테고리를 찾을 수 없는 경우의 처리
-            throw new NotFoundException("카테고리를 찾을 수 없습니다.");
+            // 특정 카테고리가 지정된 경우, 해당 카테고리에 속하는 챌린지 조회
+            Category category = categoryRepository.findByCategoryName(categoryName)
+                    .orElseThrow(() -> new NotFoundException("카테고리를 찾을 수 없습니다."));
+            challenges = challengeRepository.findByCategory(category);
         }
+
+        if (challenges.isEmpty()) {
+            throw new NotFoundException("카테고리에 해당하는 챌린지가 없습니다.");
+        }
+
+        //챌린지 리스트에서 랜덤하게 하나 선택
+        Random random = new Random();
+        Challenge selectedChallenge = challenges.get(random.nextInt(challenges.size()));
+
+        //선택된 챌린지를 바탕으로 Trychall 객체 생성 및 저장
+        TryChall tryChall = TryChall.create(selectedChallenge, member);
+        TryChall draw = tryChallRepository.save(tryChall);
+
+        return DrawChallengeResponseDto.createDrawChallengeDto(draw);
     }
 
     //챌린지 도전

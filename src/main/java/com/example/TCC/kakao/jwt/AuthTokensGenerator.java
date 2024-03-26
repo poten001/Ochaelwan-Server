@@ -47,9 +47,9 @@ import org.springframework.stereotype.Component;
 public class AuthTokensGenerator {
     private static final String BEARER_TYPE = "Bearer";
     // 만료 시간을 밀리초 단위로 설정
-    public static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60; // 30분
-//    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일
-    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 2; // 7일
+    public static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30; // 30분
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일
+//    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 2; // 7일
 
     private final JwtTokenProvider jwtTokenProvider;
 
