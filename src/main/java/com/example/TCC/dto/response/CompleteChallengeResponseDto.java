@@ -21,11 +21,13 @@ public class CompleteChallengeResponseDto {
     private String memberProfile;
     private LocalDateTime startTime;
     private LocalDateTime completeTime;
-    private Duration takenTime;
+    private String takenTime;
     private String challengeTitle;
     private String challengeImg;
 
     public static CompleteChallengeResponseDto createCompleteChallengeDto(CompleteChall completeChall) {
+
+        String formattedTakenTime = formatTakenTime(completeChall.getTakenTime());
 
         return new CompleteChallengeResponseDto(
                 completeChall.getId(),
@@ -33,9 +35,30 @@ public class CompleteChallengeResponseDto {
                 completeChall.getMemberProfileImg(),
                 completeChall.getStartTime(),
                 completeChall.getCompleteTime(),
-                completeChall.getTakenTime(),
+                formattedTakenTime,
                 completeChall.getChallengeTitle(),
                 completeChall.getChallengeImg()
         );
+    }
+
+    //Duration 타입을 받아와서 조건에 맞는 문자열로 변환
+    private static String formatTakenTime(Duration duration) {
+        long seconds = duration.getSeconds();
+        long hours = seconds / 3600;
+        long minutes = (seconds % 3600) / 60;
+
+        if (hours > 0) {
+            if (minutes == 0) {
+                return String.format("%d시간 만에 완료", hours);
+            } else {
+                return String.format("%d시간 %d분 만에 완료", hours, minutes);
+            }
+        } else if (minutes > 0) {
+            return String.format("%d분 만에 완료", minutes);
+        } else {
+            //1분 미만인 경우, 1분으로 처리
+            return "1분 만에 완료";
+        }
+
     }
 }
