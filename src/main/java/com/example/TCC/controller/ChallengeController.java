@@ -74,4 +74,15 @@ public class ChallengeController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(dtos);
     }
+
+    //완료한 챌린지 상세 조회
+    @GetMapping("/challenge/{challengeId}")
+    public ResponseEntity<CompleteChallengeResponseDto> show(@PathVariable Long challengeId, @RequestHeader("Authorization") String authorizationHeader) {
+        //로그인한 사용자가 있는지 확인
+        Member member = memberService.getCurrentUser(authorizationHeader);
+        CompleteChallengeResponseDto dto = challengeService.show(challengeId, member);
+
+        return ResponseEntity.status(HttpStatus.OK).body(dto);
+    }
+
 }

@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -138,5 +135,18 @@ public class ChallengeService {
         }
 
         return dtos;
+    }
+
+    //완료한 챌린지 상세 조회
+    public CompleteChallengeResponseDto show(Long challengeId, Member member) {
+        Long memberId = member.getId();
+
+        // 멤버 ID와 챌린지 ID를 모두 조건으로 사용하여 특정 챌린지 완료 데이터 조회
+        CompleteChall completeChall = completeChallRepository.findByIdAndMemberId(challengeId, memberId)
+                .orElseThrow(() -> new NotFoundException("해당하는 챌린지 완료 정보를 찾을 수 없습니다."));
+
+
+        CompleteChallengeResponseDto dto = CompleteChallengeResponseDto.createCompleteChallengeDto(completeChall);
+        return dto;
     }
 }
