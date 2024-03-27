@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CompleteChallRepository extends JpaRepository<CompleteChall, Long> {
-    List<CompleteChall> findAllByMemberId(Long memberId);
+    List<CompleteChall> findAllByMemberIdOrderByCompleteTimeDesc(Long memberId);
 
     Optional<CompleteChall> findByIdAndMemberId(Long challengeId, Long memberId);
 }
