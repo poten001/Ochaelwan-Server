@@ -126,7 +126,7 @@ public class ChallengeService {
     public List<CompleteChallengeResponseDto> showAll(Member member) {
         Long memberId = member.getId();
 
-        List<CompleteChall> challenges = completeChallRepository.findAllByMemberId(memberId);
+        List<CompleteChall> challenges = completeChallRepository.findAllByMemberIdOrderByCompleteTimeDesc(memberId);
 
         List<CompleteChallengeResponseDto> dtos = new ArrayList<CompleteChallengeResponseDto>();
         for (CompleteChall c : challenges) {
