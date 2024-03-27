@@ -16,6 +16,7 @@ import java.util.Locale;
 @NoArgsConstructor
 @Getter
 public class CompleteChallengeResponseDto {
+    private Long id;
     private String memberName;
     private String memberProfile;
     private LocalDateTime startTime;
@@ -27,6 +28,7 @@ public class CompleteChallengeResponseDto {
     public static CompleteChallengeResponseDto createCompleteChallengeDto(CompleteChall completeChall) {
 
         return new CompleteChallengeResponseDto(
+                completeChall.getId(),
                 completeChall.getNickname(),
                 completeChall.getMemberProfileImg(),
                 completeChall.getStartTime(),

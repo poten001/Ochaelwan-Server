@@ -7,10 +7,7 @@ import com.example.TCC.dto.response.DrawChallengeResponseDto;
 import com.example.TCC.dto.response.TryChallengeResponseDto;
 import com.example.TCC.exception.ConflictException;
 import com.example.TCC.exception.NotFoundException;
-import com.example.TCC.repository.CategoryRepository;
-import com.example.TCC.repository.ChallengeRepository;
-import com.example.TCC.repository.CompleteChallRepository;
-import com.example.TCC.repository.TryChallRepository;
+import com.example.TCC.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -114,6 +112,9 @@ public class ChallengeService {
         TryChall tryChall = tryChallRepository.findByMember(member)
                 .orElseThrow( () -> new NotFoundException("완료할 챌린지가 없습니다."));
 
+        if (tryChall.getExpireTime() == null)
+            throw new NotFoundException("도전 중인 챌린지가 없습니다.");
+
         CompleteChall completeChall = CompleteChall.create(tryChall);
         CompleteChall complete = completeChallRepository.save(completeChall);
 
@@ -122,5 +123,20 @@ public class ChallengeService {
         CompleteChallengeResponseDto dto = CompleteChallengeResponseDto.createCompleteChallengeDto(complete);
 
         return dto;
+    }
+
+    //완료한 챌린지 전체 조회
+    public List<CompleteChallengeResponseDto> showAll(Member member) {
+        Long memberId = member.getId();
+
+        List<CompleteChall> challenges = completeChallRepository.findAllByMemberId(memberId);
+
+        List<CompleteChallengeResponseDto> dtos = new ArrayList<CompleteChallengeResponseDto>();
+        for (CompleteChall c : challenges) {
+            CompleteChallengeResponseDto dto = CompleteChallengeResponseDto.createCompleteChallengeDto(c);
+            dtos.add(dto);
+        }
+
+        return dtos;
     }
 }
