@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -20,8 +22,10 @@ public class CompleteChall {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private Long memberId;
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Member member;
 
     @Column
     private String nickname;
@@ -52,7 +56,7 @@ public class CompleteChall {
 
         return new CompleteChall(
                 null,
-                tryChall.getMember().getId(),
+                tryChall.getMember(),
                 tryChall.getNickname(),
                 tryChall.getMember().getProfileImg(),
                 tryChall.getStartTime(),
