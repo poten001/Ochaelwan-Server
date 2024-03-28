@@ -1,4 +1,4 @@
-package com.example.TCC.kakao.jwt;
+package com.example.TCC.config;
 
 import com.example.TCC.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;

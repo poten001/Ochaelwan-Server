@@ -1,4 +1,4 @@
-package com.example.TCC;
+package com.example.TCC.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
