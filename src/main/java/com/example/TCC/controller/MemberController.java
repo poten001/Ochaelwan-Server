@@ -8,6 +8,7 @@ import com.example.TCC.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,7 +44,7 @@ public class MemberController {
 
     //회원 정보 수정(닉네임 수정)
     @PatchMapping("/member")
-    public ResponseEntity<MemberResponseDto> update(@RequestBody NicknameRequestDto nickname, @RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<MemberResponseDto> update(@Validated @RequestBody NicknameRequestDto nickname, @RequestHeader("Authorization") String authorizationHeader) {
         //로그인한 사용자가 있는지 확인
         Member member = memberService.getCurrentUser(authorizationHeader);
 
