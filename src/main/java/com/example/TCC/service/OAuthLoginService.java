@@ -63,7 +63,7 @@ public class OAuthLoginService {
 
         // DB에 저장된 refreshToken과 일치하는지 검사
         if (!refreshToken.equals(member.getRefreshToken())) {
-            throw new UnAuthorizedException("TOKEN_INCORRECT_ERROR");
+            throw new UnAuthorizedException("토큰 정보가 일치하지 않습니다.");
         }
 
         // 새로운 accessToken 생성 (refreshToken은 유지)
