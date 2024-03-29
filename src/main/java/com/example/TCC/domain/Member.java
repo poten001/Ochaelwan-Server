@@ -43,7 +43,7 @@ public class Member {
     }
 
     public void patch(NicknameRequestDto dto) {
-        if(this.nickname != dto.getNickname())
-            this.nickname = dto.getNickname();
+        if(this.nickname != dto.getMemberName())
+            this.nickname = dto.getMemberName();
     }
 }
