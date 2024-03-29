@@ -44,11 +44,11 @@ public class MemberController {
 
     //회원 정보 수정(닉네임 수정)
     @PatchMapping("/member")
-    public ResponseEntity<MemberResponseDto> update(@Validated @RequestBody NicknameRequestDto nickname, @RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<MemberResponseDto> update(@Validated @RequestBody NicknameRequestDto memberName, @RequestHeader("Authorization") String authorizationHeader) {
         //로그인한 사용자가 있는지 확인
         Member member = memberService.getCurrentUser(authorizationHeader);
 
-        MemberResponseDto dto = memberService.update(member, nickname);
+        MemberResponseDto dto = memberService.update(member, memberName);
 
         return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
