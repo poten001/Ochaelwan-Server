@@ -9,6 +9,7 @@ import com.example.TCC.kakao.jwt.AuthTokensGenerator;
 import com.example.TCC.repository.MemberRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +50,7 @@ public class MemberService {
         return MemberResponseDto.createMemberDto(member);
     }
 
+    @Transactional
     //회원 정보 수정(닉네임 수정)
     public MemberResponseDto update(Member member, NicknameRequestDto dto) {
         Member target = member;
