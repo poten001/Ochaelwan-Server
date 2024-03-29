@@ -8,7 +8,7 @@ import com.example.TCC.dto.response.TryChallengeResponseDto;
 import com.example.TCC.exception.ConflictException;
 import com.example.TCC.exception.NotFoundException;
 import com.example.TCC.repository.*;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +26,7 @@ public class ChallengeService {
     private final CategoryRepository categoryRepository;
     private final CompleteChallRepository completeChallRepository;
 
+    @Transactional
     //챌린지 뽑기
     public DrawChallengeResponseDto draw(DrawChallengeRequestDto dto, Member member) {
 
@@ -86,6 +87,7 @@ public class ChallengeService {
         tryChallRepository.save(tryChall); //변경된 챌린지 정보 저장
     }
 
+    @Transactional(readOnly = true)
     //챌린지 도전항목 조회
     public TryChallengeResponseDto tryCheck(Member member) {
 
@@ -102,6 +104,7 @@ public class ChallengeService {
         return dto;
     }
 
+    @Transactional
     //챌린지 완료
     public CompleteChallengeResponseDto complete(Member member) {
 
@@ -122,6 +125,7 @@ public class ChallengeService {
         return dto;
     }
 
+    @Transactional(readOnly = true)
     //완료한 챌린지 전체 조회
     public List<CompleteChallengeResponseDto> showAll(Member member) {
         Long memberId = member.getId();
@@ -137,6 +141,7 @@ public class ChallengeService {
         return dtos;
     }
 
+    @Transactional(readOnly = true)
     //완료한 챌린지 상세 조회
     public CompleteChallengeResponseDto show(Long challengeId, Member member) {
         Long memberId = member.getId();

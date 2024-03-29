@@ -2,16 +2,24 @@ package com.example.TCC.service;
 
 import com.example.TCC.domain.Member;
 import com.example.TCC.dto.response.AccessTokenGetSuccess;
+import com.example.TCC.exception.ConflictException;
 import com.example.TCC.exception.UnAuthorizedException;
 import com.example.TCC.kakao.OAuthInfoResponse;
 import com.example.TCC.kakao.OAuthLoginParams;
+import com.example.TCC.kakao.OAuthProvider;
 import com.example.TCC.kakao.RequestOAuthInfoService;
 import com.example.TCC.kakao.jwt.AuthTokens;
 import com.example.TCC.kakao.jwt.AuthTokensGenerator;
 import com.example.TCC.kakao.jwt.JwtTokenProvider;
 import com.example.TCC.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.print.attribute.standard.Media;
+import java.security.AuthProvider;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +29,7 @@ public class OAuthLoginService {
     private final RequestOAuthInfoService requestOAuthInfoService;
     private final JwtTokenProvider jwtTokenProvider;
 
+    @Transactional
     public AuthTokens login(OAuthLoginParams params) {
         OAuthInfoResponse oAuthInfoResponse = requestOAuthInfoService.request(params);
         Long memberId = findOrCreateMember(oAuthInfoResponse);
@@ -52,6 +61,7 @@ public class OAuthLoginService {
         return memberRepository.save(member).getId();
     }
 
+    @Transactional(readOnly = true)
     public AccessTokenGetSuccess refreshToken(final String refreshToken) {
         if (!jwtTokenProvider.validateToken(refreshToken)) {
             throw new UnAuthorizedException("토큰이 유효하지 않습니다.");
@@ -73,6 +83,7 @@ public class OAuthLoginService {
         return AccessTokenGetSuccess.of(newAccessToken);
     }
 
+    @Transactional
     public void logout(Member member) {
             member.setRefreshToken(null); // 또는 적절한 무효화 방법 선택
             memberRepository.save(member);
