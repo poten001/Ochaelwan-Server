@@ -1,36 +1,33 @@
 package com.example.TCC.kakao.jwt;
 
-import com.example.TCC.exception.UnAuthorizedException;
+import com.example.TCC.kakao.jwt.AuthTokens;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
 public class AuthTokensGenerator {
     private static final String BEARER_TYPE = "Bearer";
-    // 만료 시간을 밀리초 단위로 설정
-    public static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30; // 30분
-    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일
-//    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 2; // 7일
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;            // 30분
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;  // 7일
 
     private final JwtTokenProvider jwtTokenProvider;
 
     public AuthTokens generate(Long memberId) {
+        long now = (new Date()).getTime();
+        Date accessTokenExpiredAt = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
+        Date refreshTokenExpiredAt = new Date(now + REFRESH_TOKEN_EXPIRE_TIME);
+
         String subject = memberId.toString();
+        String accessToken = jwtTokenProvider.generate(subject, accessTokenExpiredAt);
+        String refreshToken = jwtTokenProvider.generate(subject, refreshTokenExpiredAt);
 
-        // 새로운 generateToken 메소드 사용
-        String accessToken = jwtTokenProvider.generateToken(subject, ACCESS_TOKEN_EXPIRE_TIME);
-        String refreshToken = jwtTokenProvider.generateToken(subject, REFRESH_TOKEN_EXPIRE_TIME);
-
-        // expiresIn 값을 초 단위로 변환하여 전달
-        return AuthTokens.of(accessToken, refreshToken, BEARER_TYPE, ACCESS_TOKEN_EXPIRE_TIME / 1000);
+        return AuthTokens.of(accessToken, refreshToken, BEARER_TYPE, ACCESS_TOKEN_EXPIRE_TIME / 1000L);
     }
 
     public Long extractMemberId(String accessToken) {
-        try {
-            return Long.valueOf(jwtTokenProvider.getSubject(accessToken));
-        } catch (Exception e) {
-            throw new UnAuthorizedException("로그인이 필요합니다.");
-        }
+        return Long.valueOf(jwtTokenProvider.extractSubject(accessToken));
     }
 }
