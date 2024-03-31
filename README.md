@@ -1,4 +1,4 @@
-# 오챌완 (a.k.a. 오늘의 챌린지 완료) 🏆
+# 🏆 오챌완 (a.k.a. 오늘의 챌린지 완료) 🏆
 ![image](https://github.com/poten001/Ochaelwan-Server/assets/113420297/f1d9d507-24c0-4346-9bfb-cc1767ac3c7f)
 ![image](https://github.com/poten001/Ochaelwan-Server/assets/113420297/ae8db02a-34cc-4451-9f95-d20a69da606e)
 ![image](https://github.com/poten001/Ochaelwan-Server/assets/113420297/10136cd3-31c4-4e0b-9bd9-0eb99aa99ed6)
