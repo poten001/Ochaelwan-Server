@@ -11,8 +11,9 @@
 ## Developers ✨
 | BE |
 |----------|
-|![image](https://github.com/poten001/Ochaelwan-Server/assets/113420297/daf86ca5-ec1c-4ba6-9c1a-3c938e718a18)|
+|![image](https://github.com/poten001/Ochaelwan-Server/assets/113420297/87b6a50f-f67d-4d9e-aa88-c7561dcb3a1c)|
 | 김채원 |
+
 
 
 ## Tech Stack 🛠️
