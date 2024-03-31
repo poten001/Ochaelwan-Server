@@ -13,7 +13,6 @@
 | BE |
 |----------|
 |![image](https://github.com/poten001/Ochaelwan-Server/assets/113420297/3a80f59c-18bb-407d-b2ea-45de9570aa3d)|
-|----------|
 | 김채원 |
 
 
