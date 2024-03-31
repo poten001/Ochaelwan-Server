@@ -33,6 +33,9 @@ public class Member {
     @Column
     private String refreshToken;
 
+//    @Column
+//    private String kakaoAccessToken;
+
     @Builder
     public Member(String email, String nickname, String profileUrl, OAuthProvider oAuthProvider, String refreshToken) {
         this.email = email;
