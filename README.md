@@ -1,18 +1,17 @@
 # 오챌완 (a.k.a. 오늘의 챌린지 완료) 🏆
-![image](https://github.com/poten001/Ochaelwan-Server/assets/113420297/fb99164f-2a7c-4003-baba-6cba1750c822)
-![image](https://github.com/poten001/Ochaelwan-Server/assets/113420297/04e81830-faec-4d60-b9ae-0336af2c8172)
-![image](https://github.com/poten001/Ochaelwan-Server/assets/113420297/b64aeca7-9906-43bf-8de1-fc4ed5d8544e)
-![image](https://github.com/poten001/Ochaelwan-Server/assets/113420297/8e4cb002-a394-4095-95b6-b10478d0db3d)
-![image](https://github.com/poten001/Ochaelwan-Server/assets/113420297/63008156-a429-4196-912a-59fb82d01b30)
-![image](https://github.com/poten001/Ochaelwan-Server/assets/113420297/6a8f69bf-bc68-4aa8-8169-1928a7da4a2e)
-![image](https://github.com/poten001/Ochaelwan-Server/assets/113420297/42049837-1269-476a-87de-967220dfee3d)
+![image](https://github.com/poten001/Ochaelwan-Server/assets/113420297/f1d9d507-24c0-4346-9bfb-cc1767ac3c7f)
+![image](https://github.com/poten001/Ochaelwan-Server/assets/113420297/ae8db02a-34cc-4451-9f95-d20a69da606e)
+![image](https://github.com/poten001/Ochaelwan-Server/assets/113420297/10136cd3-31c4-4e0b-9bd9-0eb99aa99ed6)
+![image](https://github.com/poten001/Ochaelwan-Server/assets/113420297/125230e5-348a-47cb-bfb9-bc025c5ed71e)
+![image](https://github.com/poten001/Ochaelwan-Server/assets/113420297/048c3355-53c7-4888-998e-d7551f0afc77)
+![image](https://github.com/poten001/Ochaelwan-Server/assets/113420297/7728b0ea-89dd-4547-aa22-e4f14ad5cb14)
+![image](https://github.com/poten001/Ochaelwan-Server/assets/113420297/1daf2b7c-d6b4-4e62-98c4-6174f3caef32)
 
 
-
-## Developers ✨
+## Developers ✨
 | BE |
 |----------|
-|![image](https://github.com/poten001/Ochaelwan-Server/assets/113420297/3a80f59c-18bb-407d-b2ea-45de9570aa3d)|
+|![image](https://github.com/poten001/Ochaelwan-Server/assets/113420297/daf86ca5-ec1c-4ba6-9c1a-3c938e718a18)|
 | 김채원 |
 
 
