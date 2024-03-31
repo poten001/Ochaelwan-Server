@@ -40,4 +40,12 @@ public class AuthController {
         oAuthLoginService.logout(member);
         return ResponseEntity.ok("로그아웃 완료");
     }
+//
+//    @DeleteMapping("/delete")
+//    public ResponseEntity<String> delete(@RequestHeader("Authorization") String authorizationHeader) {
+//        Member member = memberService.getCurrentUser(authorizationHeader);
+//
+//        oAuthLoginService.delete(member);
+//        return ResponseEntity.ok("회원탈퇴 완료");
+//    }
 }
