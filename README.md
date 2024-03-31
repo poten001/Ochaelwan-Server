@@ -9,10 +9,10 @@
 
 
 ## Developers ✨
-| BE |
+| 김채원 |
 |----------|
 |![image](https://github.com/poten001/Ochaelwan-Server/assets/113420297/87b6a50f-f67d-4d9e-aa88-c7561dcb3a1c)|
-| 김채원 |
+| <p align="center"> SERVER </p> |
 
 
 
