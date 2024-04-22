@@ -31,6 +31,7 @@ public class ChallengeService {
     public DrawChallengeResponseDto draw(DrawChallengeRequestDto dto, Member member) {
 
         //이미 도전 중인 챌린지가 있는지 확인
+        //예외처리 중복 처리하기
         if (tryChallRepository.existsByMemberAndExpireTimeIsNotNull(member)) {
             throw new ConflictException("이미 도전 중인 챌린지가 있습니다.");
         }
