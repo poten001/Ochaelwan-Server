@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Setter
 @Entity
 @NoArgsConstructor
 public class Member {
@@ -48,5 +47,13 @@ public class Member {
     public void patch(NicknameRequestDto dto) {
         if(this.nickname != dto.getMemberName())
             this.nickname = dto.getMemberName();
+    }
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public void clearRefreshToken() {
+        this.refreshToken = null;
     }
 }

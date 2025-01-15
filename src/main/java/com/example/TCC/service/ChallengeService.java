@@ -2,157 +2,86 @@ package com.example.TCC.service;
 
 import com.example.TCC.domain.*;
 import com.example.TCC.dto.request.DrawChallengeRequestDto;
-import com.example.TCC.dto.response.CompleteChallengeResponseDto;
 import com.example.TCC.dto.response.DrawChallengeResponseDto;
-import com.example.TCC.dto.response.TryChallengeResponseDto;
 import com.example.TCC.exception.ConflictException;
 import com.example.TCC.exception.NotFoundException;
-import com.example.TCC.repository.*;
+import com.example.TCC.manager.category.CategoryRetriever;
+import com.example.TCC.manager.challenge.ChallengeRetriever;
+import com.example.TCC.manager.tryChall.TryChallRemover;
+import com.example.TCC.manager.tryChall.TryChallRetriever;
+import com.example.TCC.manager.tryChall.TryChallSaver;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class ChallengeService {
 
-    private final TryChallRepository tryChallRepository;
-    private final ChallengeRepository challengeRepository;
-    private final CategoryRepository categoryRepository;
-    private final CompleteChallRepository completeChallRepository;
+    private final TryChallRetriever tryChallRetriever;
+    private final TryChallSaver tryChallSaver;
+    private final TryChallRemover tryChallRemover;
+    private final ChallengeRetriever challengeRetriever;
+    private final CategoryRetriever categoryRetriever;
 
     @Transactional
-    //챌린지 뽑기
+    // 챌린지 뽑기
     public DrawChallengeResponseDto draw(DrawChallengeRequestDto dto, Member member) {
-
-        //이미 도전 중인 챌린지가 있는지 확인
-        //예외처리 중복 처리하기
-        if (tryChallRepository.existsByMemberAndExpireTimeIsNotNull(member)) {
-            throw new ConflictException("이미 도전 중인 챌린지가 있습니다.");
-        }
-
-        //기존에 뽑기만 한 챌린지 삭제
-        Optional<TryChall> existingChallenge = tryChallRepository.findByMemberAndExpireTimeIsNull(member);
-        existingChallenge.ifPresent(tryChallRepository::delete);
+        // 이미 도전 중인 챌린지가 있는지 확인
+        validateExistingChallenge(member);
+        // 기존에 뽑기만 한 챌린지 삭제
+        removeExistingChallengeIfAny(member);
 
         String categoryName = dto.getCategory();
+        // 챌린지 목록 가져오기
+        List<Challenge> challenges = fetchChallenges(categoryName);
 
-        List<Challenge> challenges;
-
-        //랜덤을 선택한 경우 모든 챌린지를 조회
-        if (categoryName.equals("랜덤")) {
-            challenges = challengeRepository.findAll();
-        } else {
-            // 특정 카테고리가 지정된 경우, 해당 카테고리에 속하는 챌린지 조회
-            Category category = categoryRepository.findByCategoryName(categoryName)
-                    .orElseThrow(() -> new NotFoundException("카테고리를 찾을 수 없습니다."));
-            challenges = challengeRepository.findByCategory(category);
-        }
-
-        if (challenges.isEmpty()) {
-            throw new NotFoundException("카테고리에 해당하는 챌린지가 없습니다.");
-        }
-
-        //챌린지 리스트에서 랜덤하게 하나 선택
-        Random random = new Random();
-        Challenge selectedChallenge = challenges.get(random.nextInt(challenges.size()));
-
-        //선택된 챌린지를 바탕으로 Trychall 객체 생성 및 저장
-        TryChall tryChall = TryChall.create(selectedChallenge, member);
-        TryChall draw = tryChallRepository.save(tryChall);
+        // 랜덤으로 챌린지 선택
+        Challenge selectedChallenge = selectRandomChallenge(challenges);
+        // 선택된 챌린지 저장
+        TryChall draw = saveSelectedChallenge(selectedChallenge, member);
 
         return DrawChallengeResponseDto.createDrawChallengeDto(draw);
     }
 
-    //챌린지 도전
-    @Transactional
-    public void tryChallenge(Member member) {
-        //멤버에 해당하는 챌린지 가져오기
-        TryChall tryChall = tryChallRepository.findByMember(member)
-                .orElseThrow( () -> new NotFoundException("챌린지를 찾을 수 없습니다."));
+    // 이미 도전 중인 챌린지가 있는지 확인하고 예외 처리
+    private void validateExistingChallenge(Member member) {
+        if (tryChallRetriever.existsByMemberAndExpireTimeIsNotNull(member)) {
+            throw new ConflictException("이미 도전 중인 챌린지가 있습니다.");
+        }
+    }
 
-        //만료시간 설정해주기 (시작시간으로부터 24시간 뒤)
-        if (tryChall.getStartTime() != null) {
-            LocalDateTime expireTime = tryChall.getStartTime().plus(Duration.ofHours(24));
-            tryChall.setExpireTime(expireTime);
+    // 기존에 뽑기만 한 챌린지가 있으면 삭제
+    private void removeExistingChallengeIfAny(Member member) {
+        Optional<TryChall> existingChallenge = tryChallRetriever.findByMemberAndExpireTimeIsNull(member);
+        existingChallenge.ifPresent(tryChallRemover::delete);
+    }
+
+    // 카테고리에 따라 챌린지 목록 가져오기
+    private List<Challenge> fetchChallenges(String categoryName) {
+        if ("랜덤".equals(categoryName)) {
+            return challengeRetriever.findAll();
         } else {
-            //시작시간이 설정되어 있지 않는 경우
-            throw new NotFoundException("챌린지 시작시간이 설정되어 있지 않습니다.");
+            Category category = categoryRetriever.findByCategoryName(categoryName);
+            List<Challenge> challenges = challengeRetriever.findByCategory(category);
+            if (challenges.isEmpty()) {
+                throw new NotFoundException("카테고리에 해당하는 챌린지가 없습니다.");
+            }
+            return challenges;
         }
-
-        tryChallRepository.save(tryChall); //변경된 챌린지 정보 저장
     }
 
-    @Transactional(readOnly = true)
-    //챌린지 도전항목 조회
-    public TryChallengeResponseDto tryCheck(Member member) {
-
-        //멤버에 해당하는 챌린지 가져오기
-        TryChall tryChall = tryChallRepository.findByMember(member)
-                .orElseThrow( () -> new NotFoundException("도전 중인 챌린지가 없습니다."));
-
-        //만료시간이 null이면 조회 못하게 해야함 (뽑기만 하고
-        if (tryChall.getExpireTime() == null)
-            throw new NotFoundException("도전 중인 챌린지가 없습니다.");
-
-        TryChallengeResponseDto dto = TryChallengeResponseDto.createTryChallengeDto(tryChall);
-
-        return dto;
+    // 랜덤으로 챌린지 선택
+    private Challenge selectRandomChallenge(List<Challenge> challenges) {
+        Random random = new Random();
+        return challenges.get(random.nextInt(challenges.size()));
     }
 
-    @Transactional
-    //챌린지 완료
-    public CompleteChallengeResponseDto complete(Member member) {
-
-        //멤버에 해당하는 챌린지 가져오기
-        TryChall tryChall = tryChallRepository.findByMember(member)
-                .orElseThrow( () -> new NotFoundException("완료할 챌린지가 없습니다."));
-
-        if (tryChall.getExpireTime() == null)
-            throw new NotFoundException("도전 중인 챌린지가 없습니다.");
-
-        CompleteChall completeChall = CompleteChall.create(tryChall);
-        CompleteChall complete = completeChallRepository.save(completeChall);
-
-        tryChallRepository.delete(tryChall);
-
-        CompleteChallengeResponseDto dto = CompleteChallengeResponseDto.createCompleteChallengeDto(complete);
-
-        return dto;
-    }
-
-    @Transactional(readOnly = true)
-    //완료한 챌린지 전체 조회
-    public List<CompleteChallengeResponseDto> showAll(Member member) {
-        Long memberId = member.getId();
-
-        List<CompleteChall> challenges = completeChallRepository.findAllByMemberIdOrderByCompleteTimeDesc(memberId);
-
-        List<CompleteChallengeResponseDto> dtos = new ArrayList<CompleteChallengeResponseDto>();
-        for (CompleteChall c : challenges) {
-            CompleteChallengeResponseDto dto = CompleteChallengeResponseDto.createCompleteChallengeDto(c);
-            dtos.add(dto);
-        }
-
-        return dtos;
-    }
-
-    @Transactional(readOnly = true)
-    //완료한 챌린지 상세 조회
-    public CompleteChallengeResponseDto show(Long challengeId, Member member) {
-        Long memberId = member.getId();
-
-        // 멤버 ID와 챌린지 ID를 모두 조건으로 사용하여 특정 챌린지 완료 데이터 조회
-        CompleteChall completeChall = completeChallRepository.findByIdAndMemberId(challengeId, memberId)
-                .orElseThrow(() -> new NotFoundException("해당하는 챌린지 완료 정보를 찾을 수 없습니다."));
-
-
-        CompleteChallengeResponseDto dto = CompleteChallengeResponseDto.createCompleteChallengeDto(completeChall);
-        return dto;
+    // 선택된 챌린지 저장
+    private TryChall saveSelectedChallenge(Challenge selectedChallenge, Member member) {
+        TryChall tryChall = TryChall.create(selectedChallenge, member);
+        return tryChallSaver.save(tryChall);
     }
 }
