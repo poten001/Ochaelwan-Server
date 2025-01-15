@@ -3,10 +3,11 @@ package com.example.TCC.service;
 import com.example.TCC.domain.Member;
 import com.example.TCC.dto.request.NicknameRequestDto;
 import com.example.TCC.dto.response.MemberResponseDto;
-import com.example.TCC.exception.NotFoundException;
 import com.example.TCC.exception.UnAuthorizedException;
 import com.example.TCC.kakao.jwt.AuthTokensGenerator;
-import com.example.TCC.repository.MemberRepository;
+import com.example.TCC.manager.member.MemberEditor;
+import com.example.TCC.manager.member.MemberRetriever;
+import com.example.TCC.manager.member.MemberSaver;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +19,9 @@ import java.util.List;
 @AllArgsConstructor
 public class MemberService {
 
-    private final MemberRepository memberRepository;
+    private final MemberRetriever memberRetriever;
+    private final MemberEditor memberEditor;
+    private final MemberSaver memberSaver;
     private final AuthTokensGenerator authTokensGenerator;
 
     //현재 로그인한 사용자의 정보 가져오기
@@ -30,13 +33,12 @@ public class MemberService {
         String accessToken = authorizationHeader.substring(7); // "Bearer " 접두어 제거
         Long memberId = authTokensGenerator.extractMemberId(accessToken); // memberId 추출
 
-        return memberRepository.findById(memberId)
-                .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다."));
+        return memberRetriever.findById(memberId);
     }
 
     //회원 전체 조회
     public List<MemberResponseDto> members() {
-        List<Member> members = memberRepository.findAll();
+        List<Member> members = memberRetriever.findAll();
         List<MemberResponseDto> dtos = new ArrayList<MemberResponseDto>();
         for (Member m : members) {
             MemberResponseDto dto = MemberResponseDto.createMemberDto(m);
@@ -53,9 +55,8 @@ public class MemberService {
     @Transactional
     //회원 정보 수정(닉네임 수정)
     public MemberResponseDto update(Member member, NicknameRequestDto dto) {
-        Member target = member;
-        target.patch(dto);
-        Member updated = memberRepository.save(target);
-        return MemberResponseDto.createMemberDto(updated);
+        memberEditor.updateNickname(member, dto); // 닉네임 수정
+        Member updatedMember = memberSaver.save(member);
+        return MemberResponseDto.createMemberDto(updatedMember);
     }
 }
