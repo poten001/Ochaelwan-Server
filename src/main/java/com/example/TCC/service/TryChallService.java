@@ -26,7 +26,7 @@ public class TryChallService {
 
         if (tryChall.getStartTime() != null) {
             LocalDateTime expireTime = tryChall.getStartTime().plus(Duration.ofHours(24));
-            tryChall.setExpireTime(expireTime);
+            tryChall.updateExpireTime(expireTime);
         } else {
             throw new NotFoundException("챌린지 시작시간이 설정되어 있지 않습니다.");
         }

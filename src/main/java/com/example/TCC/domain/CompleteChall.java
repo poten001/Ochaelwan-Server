@@ -1,10 +1,7 @@
 package com.example.TCC.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -12,10 +9,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CompleteChall {
 
     @Id
@@ -52,10 +47,21 @@ public class CompleteChall {
 //    @JoinColumn(name = "tryChall_id")
 //    private TryChall tryChall;
 
+
+    private CompleteChall(Member member, String nickname, String memberProfileImg, LocalDateTime startTime, LocalDateTime completeTime, Duration takenTime, String challengeTitle, String challengeImg) {
+        this.member = member;
+        this.nickname = nickname;
+        this.memberProfileImg = memberProfileImg;
+        this.startTime = startTime;
+        this.completeTime = completeTime;
+        this.takenTime = takenTime;
+        this.challengeTitle = challengeTitle;
+        this.challengeImg = challengeImg;
+    }
+
     public static CompleteChall create(TryChall tryChall) {
 
         return new CompleteChall(
-                null,
                 tryChall.getMember(),
                 tryChall.getNickname(),
                 tryChall.getMember().getProfileImg(),
