@@ -1,20 +1,15 @@
 package com.example.TCC.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @Entity
 @NoArgsConstructor
-@AllArgsConstructor
 public class TryChall { //챌린지 도전중
 
     @Id
@@ -40,15 +35,26 @@ public class TryChall { //챌린지 도전중
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Challenge challenge;
 
+    private TryChall(LocalDateTime startTime, LocalDateTime expireTime, String nickname, Member member, Challenge challenge) {
+        this.startTime = startTime;
+        this.expireTime = expireTime;
+        this.nickname = nickname;
+        this.member = member;
+        this.challenge = challenge;
+    }
+
     public static TryChall create(Challenge challenge, Member member) {
 
         return new TryChall(
-                null,
                 LocalDateTime.now(),
                 null,
                 member.getNickname(),
                 member,
                 challenge
         );
+    }
+
+    public void updateExpireTime(LocalDateTime expireTime) {
+        this.expireTime = expireTime;
     }
 }

@@ -1,10 +1,7 @@
 package com.example.TCC.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -12,10 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Setter
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Challenge { //챌린지
 
     @Id
@@ -33,4 +28,9 @@ public class Challenge { //챌린지
     @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<TryChall> tryChallList = new ArrayList<>();
 
+    @Builder
+    public Challenge(String title, Category category) {
+        this.title = title;
+        this.category = category;
+    }
 }
